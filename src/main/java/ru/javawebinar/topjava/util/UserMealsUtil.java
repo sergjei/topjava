@@ -59,7 +59,8 @@ public class UserMealsUtil {
                                 .flatMap(meal -> {
                                     int caloriesPerDate = meal.stream().mapToInt(UserMeal::getCalories).sum();
                                     boolean isExcess = caloriesPerDate > caloriesPerDay;
-                                    return meal.stream().filter(userMeal -> TimeUtil.isBetweenHalfOpen(userMeal.getDateTime().toLocalTime(), startTime, endTime))
+                                    return meal.stream()
+                                            .filter(userMeal -> TimeUtil.isBetweenHalfOpen(userMeal.getDateTime().toLocalTime(), startTime, endTime))
                                             .map(userMeal -> new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), isExcess));
                                 })
                                 .collect(Collectors.toList())));
