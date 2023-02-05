@@ -25,11 +25,12 @@
         <th></th>
         <th></th>
     </tr>
+    <c:set var ="dateTimeFormatter" value = "${DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm\")}"/>
     <c:forEach items="${meals}" var="meal">
         <c:set var = "textColor" value = "${(meal.excess)? \"red\":\"green\"}"/>
-        <tr style ="color:${textColor}">
+                <tr style ="color:${textColor}">
             <td>
-                <c:out value="${meal.dateTime.format( DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm\"))}"/>
+                <c:out value="${meal.dateTime.format(dateTimeFormatter)}"/>
             </td>
             <td>
                 <c:out value="${meal.description}"/>
