@@ -59,6 +59,7 @@ public class MealServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         LocalTime startTime = request.getAttribute("startTime") == null ? LocalTime.MIN : (LocalTime) request.getAttribute("startTime");
         LocalTime endTime = request.getAttribute("endTime") == null ? LocalTime.MAX : (LocalTime) request.getAttribute("endTime");
         LocalDateTime dateTimeForZero = request.getParameter("dateTime").isEmpty() ? null : LocalDateTime.parse(request.getParameter("dateTime"), dTFmt);
