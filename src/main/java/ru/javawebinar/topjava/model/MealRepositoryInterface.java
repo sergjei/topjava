@@ -1,14 +1,16 @@
 package ru.javawebinar.topjava.model;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 public interface MealRepositoryInterface {
-    void createMeal(LocalDateTime dateTime, String description, int calories);
+    void create(Meal meal);
 
-    void updateMeal(Integer id);
+    void update(Integer id, Meal meal);
 
-    void deleteMeal(Integer id);
+    void delete(Integer id);
 
-    void readMeal(Integer id);
+    List<Meal> readAll();
+
+    Meal readById(Integer id);
 
 }

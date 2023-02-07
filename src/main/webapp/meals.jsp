@@ -17,7 +17,9 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
+<a href="meals?action=create">Add Meal</a>
 <table border="1" bordercolor="black">
+    <thead>
     <tr>
         <th>Date</th>
         <th>Description</th>
@@ -25,25 +27,16 @@
         <th></th>
         <th></th>
     </tr>
-    <c:set var ="dateTimeFormatter" value = "${DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm\")}"/>
+    </thead>
+    <c:set var="dateTimeFormatter" value="${DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm\")}"/>
     <c:forEach items="${meals}" var="meal">
-        <c:set var = "textColor" value = "${(meal.excess)? \"red\":\"green\"}"/>
-                <tr style ="color:${textColor}">
-            <td>
-                <c:out value="${meal.dateTime.format(dateTimeFormatter)}"/>
-            </td>
-            <td>
-                <c:out value="${meal.description}"/>
-            </td>
-            <td>
-                <c:out value="${meal.calories}"/>
-            </td>
-            <td>
-                <c:out value="update"/>
-            </td>
-            <td>
-                <c:out value="delete"/>
-            </td>
+        <c:set var="textColor" value="${(meal.excess)? \"red\":\"green\"}"/>
+        <tr style="color:${textColor}">
+            <td><c:out value="${meal.dateTime.format(dateTimeFormatter)}"/></td>
+            <td><c:out value="${meal.description}"/></td>
+            <td><c:out value="${meal.calories}"/></td>
+            <td><a href="meals?action=update&id=<c:out value="${meal.id}"/>">Update</a></td>
+            <td><a href="meals?action=delete&id=<c:out value="${meal.id}"/>">Delete</a></td>
         </tr>
     </c:forEach>
 </table>
