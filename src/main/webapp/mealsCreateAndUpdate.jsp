@@ -10,17 +10,17 @@
 
 <html lang="ru">
 <head>
-    <title>MealsCreateAndUpdate</title>
+    <title>Meals Create And Update</title>
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
-<h2>Edit meal</h2>
+<h2><c:out value = "${param.action eq \"create\"? \"Add meal\":\"Edit meal\"}"/></h2>
 <form method=post action="meals">
     <input type="hidden" name="id" value="${meal.id}">
-    <p>DateTime:<input type="datetime-local" name="dateTime"></p>
-    <p>Description:<input type="text" name="description"></p>
-    <p>Calories:<input type="text" name="calories"></p>
+    <p>DateTime:<input type="datetime-local" name="dateTime" value = "${meal.dateTime}"></p>
+    <p>Description:<input type="text" name="description" value = "${meal.description}"></p>
+    <p>Calories:<input type="number" name="calories" value = "${meal.calories}"></p>
     <p><input type="submit" value="Save">
         <button onclick="window.history.back()" type="button">Cancel</button>
     </p>
