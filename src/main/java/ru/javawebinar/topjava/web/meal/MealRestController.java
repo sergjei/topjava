@@ -11,49 +11,55 @@ import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
+
 @Controller
 public class MealRestController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
-@Autowired
+    @Autowired
     private MealService mealService;
-@Autowired
+    @Autowired
     private UserService userService;
 
-    public List<MealTo> getAll(){
+    public List<MealTo> getAll() {
         log.info("getAll");
         int userId = SecurityUtil.authUserId();
-        return MealsUtil.getTos(mealService.getAll(userId),userService.get(userId).getCaloriesPerDay());
+        return MealsUtil.getTos(mealService.getAll(userId), userService.get(userId).getCaloriesPerDay());
     }
-    public List<MealTo> getAllFiltered(LocalDateTime startDate, LocalDateTime endDate, LocalTime startTime, LocalTime endTime){
+
+    public List<MealTo> getAllFiltered(String startDate, String endDate, String startTime, String endTime) {
         log.info("getAllFiltered");
         int userId = SecurityUtil.authUserId();
-        return MealsUtil.getTos(mealService.getAllFiltered(userId,startDate, endDate, startTime, endTime),userService.get(userId).getCaloriesPerDay());
+        LocalTime startTimeF = !startTime.isEmpty() ? LocalTime.parse(startTime + ":00") : LocalTime.MIN;
+        LocalTime endTimeF = !endTime.isEmpty() ? LocalTime.parse(endTime + ":00") : LocalTime.MAX;
+        return MealsUtil.getFilteredTos(mealService.getAllFiltered(userId, startDate, endDate), userService.get(userId).getCaloriesPerDay(), startTimeF, endTimeF);
     }
-    public Meal get(int id){
-        log.info("get {}",id);
+
+    public Meal get(int id) {
+        log.info("get {}", id);
         int userId = SecurityUtil.authUserId();
-        return mealService.get(userId,id);
+        return mealService.get(userId, id);
     }
-    public Meal create (Meal meal){
+
+    public Meal create(Meal meal) {
         log.info("create {}", meal);
         int userId = SecurityUtil.authUserId();
         return mealService.create(meal, userId);
     }
-    public void delete(int id){
-        log.info("delete {}",id);
+
+    public void delete(int id) {
+        log.info("delete {}", id);
         int userId = SecurityUtil.authUserId();
-        mealService.delete(userId,id);
+        mealService.delete(userId, id);
     }
-    public void update (Meal meal, int id){
+
+    public void update(Meal meal, int id) {
         log.info("update {} with id={}", meal, id);
         assureIdConsistent(meal, id);
         int userId = SecurityUtil.authUserId();
-        mealService.update(meal,userId);
+        mealService.update(meal, userId);
     }
 }

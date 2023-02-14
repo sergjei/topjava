@@ -22,24 +22,26 @@ public class InMemoryUserRepository implements UserRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        save(new User(null,"gey","serg@yx.ru","123", 123,true, Collections.singleton(Role.ADMIN)));
-        save(new User(null,"Sergey","serg@yandex.ru","123", 2000,true, Collections.singleton(Role.USER)));
+        save(new User(null, "Sergey", "serg@yandex.ru", "123", 2000, true, Collections.singleton(Role.USER)));
+        save(new User(null, "Sgey", "serg@yx.ru", "123", 2000, true, Collections.singleton(Role.ADMIN)));
+
     }
+
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
-        return repository.remove(id,repository.get(id));
+        return repository.remove(id, repository.get(id));
     }
 
     @Override
     public User save(User user) {
         log.info("save {}", user);
-        if(user.isNew()){
+        if (user.isNew()) {
             user.setId(counter.incrementAndGet());
-            repository.put(user.getId(),user);
+            repository.put(user.getId(), user);
             return user;
         }
-        return repository.computeIfPresent(user.getId(),(id,oldValue)->user);
+        return repository.computeIfPresent(user.getId(), (id, oldValue) -> user);
     }
 
     @Override
