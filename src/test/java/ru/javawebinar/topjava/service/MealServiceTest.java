@@ -1,8 +1,11 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -14,6 +17,10 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -26,8 +33,46 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 })
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@Ignore
 public class MealServiceTest {
+
+    @AfterClass
+    public static void testsResults() {
+        log.info("\n" + String.join("\n", testsTimeWatch));
+    }
+
+    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
+    private static final List<String> testsTimeWatch = new ArrayList<>();
+    private static int maxTestName = 30;
+    private static int maxTestTime = 2;
+
+    @Rule
+    public Stopwatch stopwatch = new Stopwatch() {
+
+        private void logInfo(Description description, long nanos) {
+            String testName = description.getMethodName();
+            maxTestName = Math.max(testName.length(), maxTestName);
+            testName = equateStringWithSpace(testName, maxTestName);
+
+            String testTime = Long.toString(TimeUnit.NANOSECONDS.toMillis(nanos));
+            maxTestTime = Math.max(testTime.length(), maxTestTime);
+            testTime = equateStringWithSpace(testTime, maxTestTime);
+
+            String testInfo = String.format("%s %s ms", testName, testTime);
+            testsTimeWatch.add(testInfo);
+            log.info(testInfo);
+        }
+
+        private String equateStringWithSpace(String text, int maxLength) {
+            char[] emptyChars = new char[maxLength - text.length()];
+            Arrays.fill(emptyChars, ' ');
+            return text.length() < maxLength ? text.concat(String.valueOf(emptyChars)) : text;
+        }
+
+        @Override
+        protected void finished(long nanos, Description description) {
+            logInfo(description, nanos);
+        }
+    };
 
     @Autowired
     private MealService service;
@@ -40,6 +85,7 @@ public class MealServiceTest {
 
     @Test
     public void deleteNotFound() {
+
         assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, USER_ID));
     }
 
@@ -85,6 +131,14 @@ public class MealServiceTest {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
         MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), getUpdated());
+    }
+
+    @Test
+    public void updateNotFound() {
+        Meal updated = getUpdated();
+        updated.setId(NOT_FOUND);
+        assertThrows(NotFoundException.class, () -> service.update(updated, USER_ID));
+
     }
 
     @Test
