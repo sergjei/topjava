@@ -29,6 +29,7 @@ public class InMemoryUserRepository extends InMemoryBaseRepository<User> impleme
                 .toList();
     }
 
+
     @Override
     public User getByEmail(String email) {
         Objects.requireNonNull(email, "email must not be null");

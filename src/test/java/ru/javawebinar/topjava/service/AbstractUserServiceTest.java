@@ -51,6 +51,7 @@ public abstract class AbstractUserServiceTest {
             log.info(result + " ms\n");
         }
     };
+
     @AfterClass
     public static void printResult() {
         log.info("\n---------------------------------" +
@@ -59,8 +60,9 @@ public abstract class AbstractUserServiceTest {
                 results +
                 "\n---------------------------------");
     }
+
     @Autowired
-    private UserService service;
+    protected UserService service;
 
     @Autowired
     private CacheManager cacheManager;

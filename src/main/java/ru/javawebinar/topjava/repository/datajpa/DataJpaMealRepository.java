@@ -1,35 +1,31 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
-import net.bytebuddy.asm.Advice;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 
 @Repository
-
+@Transactional(readOnly = true)
 public class DataJpaMealRepository implements MealRepository {
-    @PersistenceContext
-    private EntityManager em;
+
+    private final CrudUserRepository userRepository;
     private final CrudMealRepository crudRepository;
 
-    public DataJpaMealRepository(CrudMealRepository crudRepository) {
+    public DataJpaMealRepository(CrudMealRepository crudRepository, CrudUserRepository userRepository) {
         this.crudRepository = crudRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
-        meal.setUser(em.getReference(User.class, userId));
+        meal.setUser(userRepository.getReferenceById(userId));
         meal = (!meal.isNew()) && (get(meal.id(), userId) == null) ? null : meal;
         if (meal == null) {
             return null;
@@ -62,7 +58,13 @@ public class DataJpaMealRepository implements MealRepository {
     }
 
     @Override
-    public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return crudRepository.getAllForPeriod(userId,startDateTime,endDateTime);
+    public <T> List<Meal> getBetweenHalfOpen(T startDateTime, T endDateTime, int userId) {
+        return crudRepository.getAllForPeriod(userId, (LocalDateTime) startDateTime, (LocalDateTime) endDateTime);
+    }
+
+    @Override
+    @Transactional
+    public Meal getWithUser(int id, int userId) {
+        return crudRepository.getWithUser(id, userId);
     }
 }
