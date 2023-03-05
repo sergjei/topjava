@@ -59,6 +59,7 @@ public abstract class AbstractUserServiceTest {
                 "\n---------------------------------" +
                 results +
                 "\n---------------------------------");
+        results.delete(0, results.length());
     }
 
     @Autowired
