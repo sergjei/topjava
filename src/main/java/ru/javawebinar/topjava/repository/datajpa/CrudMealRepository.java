@@ -14,19 +14,20 @@ import java.util.List;
 public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @Transactional
     @Modifying
-    @Query("DELETE FROM Meal m WHERE m.id = :id")
-    int delete(@Param("id") int id);
+    @Query("DELETE FROM Meal m WHERE m.id = :id AND m.user.id=:userId")
+    int delete(@Param("id") int id, @Param("userId") int userId);
 
-    @Transactional
     @Query("SELECT m FROM Meal m WHERE m.user.id=:userId ORDER BY m.dateTime DESC")
     List<Meal> getAll(@Param("userId") int userId);
 
-    @Transactional
-    @Query("SELECT m FROM Meal m WHERE m.user.id=:userId AND m.dateTime>=:startDT AND m.dateTime<:endDT ORDER BY m.dateTime DESC")
-    List<Meal> getAllForPeriod(@Param("userId") int userId,
-                               @Param("startDT") LocalDateTime startDT, @Param("endDT") LocalDateTime endDT);
 
-    @Transactional
+    @Query("SELECT m FROM Meal m WHERE m.user.id=:userId AND m.dateTime>=:startDateTime AND m.dateTime<:endDateTime ORDER BY m.dateTime DESC")
+    List<Meal> getAllForPeriod(@Param("userId") int userId,
+                               @Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
+
+
     @Query("SELECT m FROM Meal m  JOIN FETCH  m.user WHERE m.user.id =:userId AND m.id=:id  ")
     Meal getWithUser(@Param("id") int id, @Param("userId") int userId);
+
+
 }

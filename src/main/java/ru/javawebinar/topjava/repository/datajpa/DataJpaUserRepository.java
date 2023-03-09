@@ -9,14 +9,16 @@ import ru.javawebinar.topjava.repository.UserRepository;
 import java.util.List;
 
 @Repository
-@Transactional(readOnly = true)
 public class DataJpaUserRepository implements UserRepository {
     private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
 
     private final CrudUserRepository crudRepository;
+    private final CrudMealRepository mealRepository;
 
-    public DataJpaUserRepository(CrudUserRepository crudRepository) {
+    public DataJpaUserRepository(CrudUserRepository crudRepository, CrudMealRepository mealRepository) {
+
         this.crudRepository = crudRepository;
+        this.mealRepository = mealRepository;
     }
 
     @Override
@@ -51,7 +53,7 @@ public class DataJpaUserRepository implements UserRepository {
     public User getWithMeals(int id) {
         User user = get(id);
         if (user != null) {
-            user.setMeals(crudRepository.getWithMeals(id));
+            user.setMeals(mealRepository.getAll(id));
         }
         return user;
     }

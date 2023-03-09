@@ -34,7 +34,8 @@ public class MatcherFactory {
             assertThat(actual).usingRecursiveFieldByFieldElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(expected);
         }
 
-        public void assertMatch(boolean empty, boolean b) {
+        public void assertListLength(Iterable<T> actual, int expected) {
+            assertThat(actual).hasSize(expected);
         }
     }
 }
