@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
@@ -24,6 +25,10 @@ import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 public abstract class AbstractServiceTest {
+
+    public void checkDbTypeConn(String dbConnType) {
+        Assume.assumeTrue(System.getProperty("spring.profiles.active", "unknown").contains(dbConnType));
+    }
 
     @ClassRule
     public static ExternalResource summary = TimingRules.SUMMARY;
