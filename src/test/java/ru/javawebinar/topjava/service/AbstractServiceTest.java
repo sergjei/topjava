@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
@@ -13,6 +14,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.TimingRules;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 
@@ -24,6 +27,10 @@ import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 public abstract class AbstractServiceTest {
+
+    public void checkDbTypeConn(String dbConnType, String[] activeProfiles) {
+        Assume.assumeFalse(Arrays.stream(activeProfiles).anyMatch((s) -> s.contains(dbConnType)));
+    }
 
     @ClassRule
     public static ExternalResource summary = TimingRules.SUMMARY;
