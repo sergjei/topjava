@@ -49,6 +49,17 @@ function save() {
         successNoty("Saved");
     });
 }
+function filter() {
+    $.ajax({
+        type: "GET",
+        url: "/profile/meals/filter",
+        data: $('#filter').serialize()
+    }).done(function () {
+        // $("#editRow").modal("hide");
+        updateTable();
+        // successNoty("Saved");
+    });
+}
 
 let failedNote;
 
