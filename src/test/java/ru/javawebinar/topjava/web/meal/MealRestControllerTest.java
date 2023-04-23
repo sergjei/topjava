@@ -4,6 +4,7 @@ package ru.javawebinar.topjava.web.meal;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.model.Meal;
@@ -78,6 +79,19 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         MEAL_MATCHER.assertMatch(mealService.get(MEAL1_ID, USER_ID), updated);
+    }
+    @Test
+    void updateWithException() throws Exception {
+        Meal updated = getUpdated();
+        updated.setDescription(" ");
+        updated.setCalories(0);
+        updated.setDateTime(meal2.getDateTime());
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(updated)))
+                .andExpect(status().isBadRequest());
+
+       // MEAL_MATCHER.assertMatch(mealService.get(MEAL1_ID, USER_ID), updated);
     }
 
     @Test
